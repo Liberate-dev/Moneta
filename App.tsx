@@ -4,7 +4,7 @@ import { generateSchedule, calculateCompliance, getRemainingDays } from './servi
 import { requestNotificationPermission, sendLocalNotification } from './services/notificationService';
 import { dataService } from './services/dataService'; 
 import { QRScanner } from './components/QRScanner';
-import { ActionButton } from './components/ActionButton.tsx';
+import { ActionButton } from './components/ActionButton';
 import { DoseCard } from './components/DoseCard';
 import { ComplianceChart } from './components/ComplianceChart';
 import { EducationModal } from './components/EducationModal';
