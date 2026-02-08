@@ -4,7 +4,7 @@ import { generateSchedule, calculateCompliance, getRemainingDays } from './servi
 import { requestNotificationPermission, sendLocalNotification } from './services/notificationService';
 import { dataService } from './services/dataService'; // Import the new service
 import { QRScanner } from './components/QRScanner';
-import { Button } from './components/Button';
+import { Button } from './components/Button.tsx';
 import { DoseCard } from './components/DoseCard';
 import { ComplianceChart } from './components/ComplianceChart';
 import { EducationModal } from './components/EducationModal';
@@ -17,7 +17,7 @@ interface AppProps {
   onOpenAdmin: () => void;
 }
 
-const App: React.FC<AppProps> = ({ onOpenAdmin }) => {
+export const App: React.FC<AppProps> = ({ onOpenAdmin }) => {
   // Auth State
   const [user, setUser] = useState<User | null>(null);
 
@@ -495,5 +495,3 @@ const App: React.FC<AppProps> = ({ onOpenAdmin }) => {
     </div>
   );
 };
-
-export default App;

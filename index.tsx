@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
+import { App } from './App';
 import { AdminApp } from './AdminApp';
 
 const rootElement = document.getElementById('root');
