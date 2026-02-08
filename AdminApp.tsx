@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { DrugQRCodeData } from './types';
 import { AppButton } from './components/AppButton';
 
-interface AdminAppProps {
-  onBack: () => void;
-}
+import { useNavigate } from 'react-router-dom';
 
-export const AdminApp: React.FC<AdminAppProps> = ({ onBack }) => {
+export const AdminApp: React.FC = () => {
+  const navigate = useNavigate();
+  const onBack = () => navigate('/');
   // Initial Form State
   const [formData, setFormData] = useState<Partial<DrugQRCodeData>>({
     name: '',
@@ -18,7 +18,7 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onBack }) => {
     drug_id: 'GENERIC-001'
   });
 
-  const [generatedQR, setGeneratedQR] = useState<{json: string, url: string} | null>(null);
+  const [generatedQR, setGeneratedQR] = useState<{ json: string, url: string } | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const val = e.target.type === 'number' ? Number(e.target.value) : e.target.value;
@@ -28,7 +28,7 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onBack }) => {
   const handleGenerate = () => {
     // 1. Create Unique Serial Number
     const uniqueSerial = `SN-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}-${new Date().getFullYear()}`;
-    
+
     // 2. Calculate Expiry (Example: 1 year from now)
     const expDate = new Date();
     expDate.setFullYear(expDate.getFullYear() + 1);
@@ -48,7 +48,7 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onBack }) => {
 
     // 4. Convert to JSON String
     const jsonString = JSON.stringify(finalData);
-    
+
     // 5. Generate QR Image URL (Using a public API for demo purposes to avoid npm deps)
     // In production, use a library like 'qrcode.react'
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(jsonString)}`;
@@ -70,21 +70,21 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onBack }) => {
   return (
     <div className="min-h-screen bg-slate-50 p-8 font-sans text-slate-900">
       <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
-        
+
         {/* LEFT COLUMN: INPUT FORM */}
         <div className="bg-white p-8 rounded-2xl shadow-lg border border-slate-200">
           <div className="mb-6 pb-4 border-b border-slate-100">
-             <h1 className="text-3xl font-black text-slate-800 tracking-tight">MONETA <span className="text-sky-500">Admin</span></h1>
-             <p className="text-slate-500 text-sm mt-1">QR Code Generator for Antibiotics</p>
+            <h1 className="text-3xl font-black text-slate-800 tracking-tight">MONETA <span className="text-sky-500">Admin</span></h1>
+            <p className="text-slate-500 text-sm mt-1">QR Code Generator for Antibiotics</p>
           </div>
 
           <div className="space-y-5">
             <div>
               <label className={labelClass}>Drug Name</label>
-              <input 
-                name="name" 
-                type="text" 
-                placeholder="e.g. Amoxicillin" 
+              <input
+                name="name"
+                type="text"
+                placeholder="e.g. Amoxicillin"
                 className={inputClass}
                 value={formData.name}
                 onChange={handleChange}
@@ -92,12 +92,12 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onBack }) => {
             </div>
 
             <div className="grid grid-cols-2 gap-5">
-               <div>
+              <div>
                 <label className={labelClass}>Dosage</label>
-                <input 
-                  name="dosage" 
-                  type="text" 
-                  placeholder="e.g. 500mg" 
+                <input
+                  name="dosage"
+                  type="text"
+                  placeholder="e.g. 500mg"
                   className={inputClass}
                   value={formData.dosage}
                   onChange={handleChange}
@@ -105,9 +105,9 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onBack }) => {
               </div>
               <div>
                 <label className={labelClass}>Frequency (per day)</label>
-                <input 
-                  name="frequency_per_day" 
-                  type="number" 
+                <input
+                  name="frequency_per_day"
+                  type="number"
                   className={inputClass}
                   value={formData.frequency_per_day}
                   onChange={handleChange}
@@ -116,11 +116,11 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onBack }) => {
             </div>
 
             <div className="grid grid-cols-2 gap-5">
-               <div>
+              <div>
                 <label className={labelClass}>Duration (Days)</label>
-                <input 
-                  name="duration_days" 
-                  type="number" 
+                <input
+                  name="duration_days"
+                  type="number"
                   className={inputClass}
                   value={formData.duration_days}
                   onChange={handleChange}
@@ -128,9 +128,9 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onBack }) => {
               </div>
               <div>
                 <label className={labelClass}>Total Pills</label>
-                <input 
-                  name="total_pills" 
-                  type="number" 
+                <input
+                  name="total_pills"
+                  type="number"
                   className={inputClass}
                   value={formData.total_pills}
                   onChange={handleChange}
@@ -138,10 +138,10 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onBack }) => {
               </div>
             </div>
 
-             <div>
+            <div>
               <label className={labelClass}>Instruction</label>
-              <select 
-                name="instruction" 
+              <select
+                name="instruction"
                 className={inputClass}
                 value={formData.instruction}
                 onChange={handleChange}
@@ -151,7 +151,7 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onBack }) => {
                 <option value="Saat makan">Saat makan (With food)</option>
               </select>
             </div>
-            
+
             <div className="pt-6">
               <AppButton onClick={handleGenerate} fullWidth className="py-4 text-lg shadow-sky-500/20">
                 Generate QR Code
@@ -165,41 +165,41 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onBack }) => {
           <div className="bg-slate-900 p-8 rounded-2xl shadow-xl flex flex-col items-center justify-center text-center relative overflow-hidden flex-grow min-h-[400px]">
             {/* Background pattern */}
             <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
-            
-             {!generatedQR ? (
-               <div className="text-slate-500 relative z-10">
-                 <div className="w-32 h-32 border-4 border-dashed border-slate-700 rounded-2xl mx-auto mb-6 flex items-center justify-center bg-slate-800">
-                   <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="12" cy="12" r="3"></circle><line x1="12" y1="16" x2="12" y2="21"></line></svg>
-                 </div>
-                 <p className="font-medium text-lg">Waiting for data...</p>
-                 <p className="text-sm opacity-60">Fill the form to generate label</p>
-               </div>
-             ) : (
-               <div className="w-full animate-in zoom-in duration-300 relative z-10 flex flex-col items-center">
-                  <div className="bg-white p-6 rounded-2xl inline-block mb-8 shadow-2xl">
-                     <img src={generatedQR.url} alt="QR Code" className="w-64 h-64 mix-blend-multiply" />
-                     <p className="mt-2 text-slate-900 font-bold text-sm tracking-widest">{formData.drug_id}</p>
-                  </div>
-                  
-                  <div className="w-full text-left space-y-2 mb-6 font-mono text-xs bg-black/50 backdrop-blur-md p-4 rounded-xl border border-white/10 overflow-x-auto shadow-inner">
-                     <p className="text-emerald-400 font-bold mb-2 flex items-center gap-2">
-                       <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                       PAYLOAD PREVIEW
-                     </p>
-                     <pre className="text-slate-300 whitespace-pre-wrap break-all">{generatedQR.json}</pre>
-                  </div>
 
-                  <AppButton onClick={handlePrint} variant="secondary" className="bg-white hover:bg-slate-200 text-slate-900 border-none font-bold">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-                    Print Label
-                  </AppButton>
-               </div>
-             )}
+            {!generatedQR ? (
+              <div className="text-slate-500 relative z-10">
+                <div className="w-32 h-32 border-4 border-dashed border-slate-700 rounded-2xl mx-auto mb-6 flex items-center justify-center bg-slate-800">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="12" cy="12" r="3"></circle><line x1="12" y1="16" x2="12" y2="21"></line></svg>
+                </div>
+                <p className="font-medium text-lg">Waiting for data...</p>
+                <p className="text-sm opacity-60">Fill the form to generate label</p>
+              </div>
+            ) : (
+              <div className="w-full animate-in zoom-in duration-300 relative z-10 flex flex-col items-center">
+                <div className="bg-white p-6 rounded-2xl inline-block mb-8 shadow-2xl">
+                  <img src={generatedQR.url} alt="QR Code" className="w-64 h-64 mix-blend-multiply" />
+                  <p className="mt-2 text-slate-900 font-bold text-sm tracking-widest">{formData.drug_id}</p>
+                </div>
+
+                <div className="w-full text-left space-y-2 mb-6 font-mono text-xs bg-black/50 backdrop-blur-md p-4 rounded-xl border border-white/10 overflow-x-auto shadow-inner">
+                  <p className="text-emerald-400 font-bold mb-2 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    PAYLOAD PREVIEW
+                  </p>
+                  <pre className="text-slate-300 whitespace-pre-wrap break-all">{generatedQR.json}</pre>
+                </div>
+
+                <AppButton onClick={handlePrint} variant="secondary" className="bg-white hover:bg-slate-200 text-slate-900 border-none font-bold">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                  Print Label
+                </AppButton>
+              </div>
+            )}
           </div>
-          
+
           <div className="mt-6 text-center">
-            <button 
-              onClick={onBack} 
+            <button
+              onClick={onBack}
               className="px-6 py-3 rounded-full bg-white text-slate-500 text-sm font-bold hover:text-sky-600 hover:shadow-md transition-all border border-slate-200"
             >
               ← Back to App
