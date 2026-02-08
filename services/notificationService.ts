@@ -5,6 +5,12 @@ export const requestNotificationPermission = async (): Promise<boolean> => {
     return false;
   }
 
+  // Check for Secure Context (HTTPS or localhost)
+  if (!window.isSecureContext) {
+    console.warn("Notifications require a secure context (HTTPS)");
+    return false;
+  }
+
   const permission = await Notification.requestPermission();
   return permission === 'granted';
 };
@@ -14,10 +20,11 @@ export const sendLocalNotification = (title: string, body: string) => {
     // Check if we are on mobile service worker context (for advanced PWAs) or simple client
     try {
       // Standard notification
+      // Note: On Mobile Safari, this only works if the app is installed to Home Screen
       const notification = new Notification(title, {
         body: body,
-        icon: 'https://cdn-icons-png.flaticon.com/512/3004/3004458.png', // App Icon
-        badge: 'https://cdn-icons-png.flaticon.com/512/3004/3004458.png',
+        icon: '/pwa-192x192.png', // Assuming you have PWA icons (using placeholder or path from manifest)
+        badge: '/pwa-192x192.png',
         vibrate: [200, 100, 200],
         requireInteraction: true, // Keeps notification on screen until user interacts
       } as any);
