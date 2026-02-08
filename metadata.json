@@ -1,0 +1,7 @@
+{
+  "name": "MONETA - Antibiotic Tracker",
+  "description": "A strict medication adherence tracker focused on antibiotics, featuring QR code setup, smart scheduling, and compliance monitoring to prevent resistance.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
