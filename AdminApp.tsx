@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { DrugQRCodeData } from './types';
-import { ActionButton } from './components/ActionButton';
+import { ActionButton } from './components/ActionButton.tsx';
 
 interface AdminAppProps {
   onBack: () => void;
