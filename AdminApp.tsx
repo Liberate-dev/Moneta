@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { DrugQRCodeData } from './types';
-import { ActionButton } from './components/ActionButton';
+import { AppButton } from './components/AppButton';
 
 interface AdminAppProps {
   onBack: () => void;
@@ -153,9 +153,9 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onBack }) => {
             </div>
             
             <div className="pt-6">
-              <ActionButton onClick={handleGenerate} fullWidth className="py-4 text-lg shadow-sky-500/20">
+              <AppButton onClick={handleGenerate} fullWidth className="py-4 text-lg shadow-sky-500/20">
                 Generate QR Code
-              </ActionButton>
+              </AppButton>
             </div>
           </div>
         </div>
@@ -189,10 +189,10 @@ export const AdminApp: React.FC<AdminAppProps> = ({ onBack }) => {
                      <pre className="text-slate-300 whitespace-pre-wrap break-all">{generatedQR.json}</pre>
                   </div>
 
-                  <ActionButton onClick={handlePrint} variant="secondary" className="bg-white hover:bg-slate-200 text-slate-900 border-none font-bold">
+                  <AppButton onClick={handlePrint} variant="secondary" className="bg-white hover:bg-slate-200 text-slate-900 border-none font-bold">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
                     Print Label
-                  </ActionButton>
+                  </AppButton>
                </div>
              )}
           </div>
