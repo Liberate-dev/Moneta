@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Html5QrcodeScanner } from 'html5-qrcode';
+import { Html5Qrcode } from 'html5-qrcode';
 import { AppButton } from './AppButton';
 import { MOCK_QR_OPTIONS } from '../constants';
 import { DrugQRCodeData } from '../types';
@@ -11,76 +11,106 @@ interface QRScannerProps {
 
 export const QRScanner: React.FC<QRScannerProps> = ({ onScan, onCancel }) => {
   const [error, setError] = useState<string>('');
-  const scannerRef = useRef<Html5QrcodeScanner | null>(null);
+  const [isScanning, setIsScanning] = useState(false);
+  const scannerRef = useRef<Html5Qrcode | null>(null);
 
   useEffect(() => {
-    // Initialize Scanner
-    const scanner = new Html5QrcodeScanner(
-      "reader",
-      {
-        fps: 10,
-        qrbox: { width: 250, height: 250 },
-        aspectRatio: 1.0
-      },
-      /* verbose= */ false
-    );
+    let isMounted = true;
 
-    scannerRef.current = scanner;
+    const startScanner = async () => {
+      try {
+        const devices = await Html5Qrcode.getCameras();
+        if (devices && devices.length) {
+          // Prefer back camera
+          const cameraId = devices.find(d => d.label.toLowerCase().includes('back'))?.id || devices[0].id;
 
-    scanner.render(
-      (decodedText) => {
-        try {
-          const parsedData = JSON.parse(decodedText) as DrugQRCodeData;
-          // Simple validation
-          if (parsedData.drug_id && parsedData.serial_number) {
-            handleSuccess(parsedData);
-          } else {
-            setError("Invalid QR Code format");
-          }
-        } catch (e) {
-          setError("Not a valid Moneta QR Code");
+          const html5QrCode = new Html5Qrcode("reader");
+          scannerRef.current = html5QrCode;
+
+          await html5QrCode.start(
+            cameraId,
+            {
+              fps: 10,
+              qrbox: { width: 250, height: 250 },
+              aspectRatio: 1.0
+            },
+            (decodedText) => {
+              if (!isMounted) return;
+              try {
+                const parsedData = JSON.parse(decodedText) as DrugQRCodeData;
+                if (parsedData.drug_id && parsedData.serial_number) {
+                  html5QrCode.stop().then(() => {
+                    onScan(parsedData);
+                  }).catch(err => {
+                    console.error("Failed to stop", err);
+                    onScan(parsedData);
+                  });
+                }
+              } catch (e) {
+                // Ignore invalid QRs
+              }
+            },
+            (errorMessage) => {
+              // parse error, ignore
+            }
+          );
+
+          if (isMounted) setIsScanning(true);
+        } else {
+          setError("No camera found");
         }
-      },
-      (errorMessage) => {
-        // Parse error, ignore common scanning errors
-        // console.log(errorMessage);
+      } catch (err) {
+        if (isMounted) {
+          console.error("Camera error:", err);
+          setError("Camera permission denied or error starting camera.");
+        }
       }
-    );
+    };
+
+    startScanner();
 
     return () => {
-      scanner.clear().catch(error => {
-        console.error("Failed to clear html5-qrcode scanner. ", error);
-      });
+      isMounted = false;
+      if (scannerRef.current && scannerRef.current.isScanning) {
+        scannerRef.current.stop().catch(console.error);
+      }
     };
   }, []);
 
-  const handleSuccess = (data: DrugQRCodeData) => {
-    if (scannerRef.current) {
-      scannerRef.current.clear().then(() => {
-        onScan(data);
-      }).catch((err) => {
-        console.error("Failed to clear scanner", err);
-        onScan(data); // Proceed anyway
-      });
-    } else {
-      onScan(data);
-    }
-  };
-
   const handleSimulateScan = (data: DrugQRCodeData) => {
-    handleSuccess(data);
+    onScan(data);
   };
 
   return (
     <div className="fixed inset-0 bg-black z-50 flex flex-col">
-      <div className="relative flex-1 bg-black flex flex-col justify-center">
+      <div className="relative flex-1 bg-black flex flex-col justify-center items-center overflow-hidden">
 
-        {/* Real Scanner Container */}
-        <div id="reader" className="w-full max-w-sm mx-auto overflow-hidden rounded-xl border-2 border-slate-700 bg-slate-900"></div>
+        {/* Camera Container */}
+        <div id="reader" className="w-full h-full object-cover"></div>
 
+        {/* Custom Square Overlay */}
+        <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+          {/* Dark Background Wrapper */}
+          <div className="absolute inset-0 bg-black/50"></div>
+
+          {/* Cutout for Scanner */}
+          <div className="relative w-64 h-64 border-2 border-sky-500 rounded-2xl z-10 box-content shadow-[0_0_0_9999px_rgba(0,0,0,0.5)]">
+            <div className="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-sky-500 rounded-tl-lg -mt-1 -ml-1"></div>
+            <div className="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-sky-500 rounded-tr-lg -mt-1 -mr-1"></div>
+            <div className="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-sky-500 rounded-bl-lg -mb-1 -ml-1"></div>
+            <div className="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-sky-500 rounded-br-lg -mb-1 -mr-1"></div>
+
+            {/* Scan Line Animation */}
+            {isScanning && (
+              <div className="absolute top-0 left-0 w-full h-0.5 bg-red-500 shadow-[0_0_10px_red] animate-[scan_2s_ease-in-out_infinite]"></div>
+            )}
+          </div>
+        </div>
+
+        {/* Error Message */}
         {error && (
-          <div className="absolute top-24 left-0 right-0 text-center px-4">
-            <span className="bg-red-500/80 text-white px-4 py-2 rounded-full text-sm backdrop-blur-sm">
+          <div className="absolute top-24 left-0 right-0 text-center px-4 z-20">
+            <span className="bg-red-500/90 text-white px-6 py-3 rounded-full text-sm font-bold backdrop-blur-sm shadow-lg">
               {error}
             </span>
           </div>
@@ -89,7 +119,7 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScan, onCancel }) => {
         {/* Close Button */}
         <button
           onClick={onCancel}
-          className="absolute top-4 right-4 text-white p-2 bg-black/30 rounded-full z-20"
+          className="absolute top-6 right-6 text-white p-3 bg-black/40 hover:bg-black/60 backdrop-blur-md rounded-full z-20 transition-all active:scale-95"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
@@ -98,7 +128,7 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScan, onCancel }) => {
       <div className="bg-slate-900 p-6 pb-12 rounded-t-3xl -mt-6 relative z-10 max-h-[40vh] overflow-y-auto no-scrollbar border-t border-slate-800">
         <h3 className="text-white font-bold text-lg mb-2">Scan Medication</h3>
         <p className="text-slate-400 text-sm mb-6">
-          Align the QR code within the frame logic.
+          Align the QR code within the frame to scan.
         </p>
 
         <div className="space-y-3">
@@ -118,14 +148,15 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScan, onCancel }) => {
         </div>
       </div>
 
-      {/* Override html5-qrcode styles */}
       <style>{`
-        #reader__scan_region {
-          background: rgba(0,0,0,0.5);
+        @keyframes scan {
+          0%, 100% { transform: translateY(0); opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { transform: translateY(16rem); opacity: 0; }
         }
-        #reader__dashboard_section_csr span {
-           display: none;
-        }
+        /* Hide html5-qrcode default elements if they appear */
+        #reader video { object-fit: cover; width: 100% !important; height: 100% !important; }
       `}</style>
     </div>
   );
