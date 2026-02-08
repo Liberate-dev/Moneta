@@ -4,7 +4,7 @@ import { generateSchedule, calculateCompliance, getRemainingDays } from './servi
 import { requestNotificationPermission, sendLocalNotification } from './services/notificationService';
 import { dataService } from './services/dataService'; 
 import { QRScanner } from './components/QRScanner';
-import { PrimaryButton } from './components/PrimaryButton';
+import { ActionButton } from './components/ActionButton';
 import { DoseCard } from './components/DoseCard';
 import { ComplianceChart } from './components/ComplianceChart';
 import { EducationModal } from './components/EducationModal';
@@ -289,9 +289,9 @@ export const App: React.FC<AppProps> = ({ onOpenAdmin }) => {
           </div>
 
           <div className="space-y-3">
-             <PrimaryButton onClick={() => confirmSchedule(true)} fullWidth>Start Now</PrimaryButton>
-             <PrimaryButton onClick={() => confirmSchedule(false)} variant="secondary" fullWidth>Start Later (1 Hour)</PrimaryButton>
-             <PrimaryButton onClick={() => setShowConfirm(false)} variant="secondary" className="text-red-500" fullWidth>Cancel</PrimaryButton>
+             <ActionButton onClick={() => confirmSchedule(true)} fullWidth>Start Now</ActionButton>
+             <ActionButton onClick={() => confirmSchedule(false)} variant="secondary" fullWidth>Start Later (1 Hour)</ActionButton>
+             <ActionButton onClick={() => setShowConfirm(false)} variant="secondary" className="text-red-500" fullWidth>Cancel</ActionButton>
           </div>
         </div>
       </div>
@@ -308,8 +308,8 @@ export const App: React.FC<AppProps> = ({ onOpenAdmin }) => {
              Your health data will be saved on this device.
           </p>
           <div className="space-y-3">
-            <PrimaryButton onClick={confirmLogout} variant="danger" fullWidth>Sign Out</PrimaryButton>
-            <PrimaryButton onClick={() => setShowLogoutConfirm(false)} variant="secondary" fullWidth>Cancel</PrimaryButton>
+            <ActionButton onClick={confirmLogout} variant="danger" fullWidth>Sign Out</ActionButton>
+            <ActionButton onClick={() => setShowLogoutConfirm(false)} variant="secondary" fullWidth>Cancel</ActionButton>
           </div>
         </div>
       </div>
@@ -336,9 +336,9 @@ export const App: React.FC<AppProps> = ({ onOpenAdmin }) => {
           </p>
 
           <div className="space-y-4">
-            <PrimaryButton onClick={() => setShowScanner(true)} fullWidth className="py-4 text-lg shadow-xl shadow-sky-500/20">
+            <ActionButton onClick={() => setShowScanner(true)} fullWidth className="py-4 text-lg shadow-xl shadow-sky-500/20">
               Scan QR Code
-            </PrimaryButton>
+            </ActionButton>
             
             <button 
               onClick={handleLogoutClick}
@@ -468,8 +468,8 @@ export const App: React.FC<AppProps> = ({ onOpenAdmin }) => {
                 </div>
               </div>
 
-              <PrimaryButton onClick={resetData} variant="secondary" fullWidth className="text-red-500 border-red-100">Delete Health Data</PrimaryButton>
-              <PrimaryButton onClick={handleLogoutClick} variant="danger" fullWidth>Sign Out</PrimaryButton>
+              <ActionButton onClick={resetData} variant="secondary" fullWidth className="text-red-500 border-red-100">Delete Health Data</ActionButton>
+              <ActionButton onClick={handleLogoutClick} variant="danger" fullWidth>Sign Out</ActionButton>
            </div>
         )}
 
