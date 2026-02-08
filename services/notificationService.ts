@@ -15,26 +15,51 @@ export const requestNotificationPermission = async (): Promise<boolean> => {
   return permission === 'granted';
 };
 
-export const sendLocalNotification = (title: string, body: string) => {
-  if (Notification.permission === 'granted') {
-    // Check if we are on mobile service worker context (for advanced PWAs) or simple client
-    try {
-      // Standard notification
-      // Note: On Mobile Safari, this only works if the app is installed to Home Screen
-      const notification = new Notification(title, {
-        body: body,
-        icon: '/pwa-192x192.png', // Assuming you have PWA icons (using placeholder or path from manifest)
-        badge: '/pwa-192x192.png',
-        vibrate: [200, 100, 200],
-        requireInteraction: true, // Keeps notification on screen until user interacts
-      } as any);
 
-      notification.onclick = () => {
-        window.focus();
-        notification.close();
-      };
-    } catch (e) {
-      console.error("Notification error:", e);
+export const sendLocalNotification = async (title: string, body: string, dataPayload?: any) => {
+  if (Notification.permission === 'granted') {
+    // Use Service Worker if available for actionable notifications
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        registration.showNotification(title, {
+          body: body,
+          icon: '/pwa-192x192.png',
+          badge: '/pwa-192x192.png',
+          vibrate: [200, 100, 200],
+          requireInteraction: true,
+          data: dataPayload, // Pass dose ID here
+          actions: [
+            { action: 'confirm', title: '✅ I took it', icon: '/pwa-192x192.png' },
+            { action: 'close', title: 'Start App', icon: '/pwa-192x192.png' }
+          ]
+        } as any);
+      } catch (e) {
+        console.error("SW Notification failed", e);
+        // Fallback to standard
+        fallbackNotification(title, body);
+      }
+    } else {
+      fallbackNotification(title, body);
     }
   }
 };
+
+const fallbackNotification = (title: string, body: string) => {
+  try {
+    const notification = new Notification(title, {
+      body: body,
+      icon: '/pwa-192x192.png',
+      badge: '/pwa-192x192.png',
+      vibrate: [200, 100, 200],
+      requireInteraction: true,
+    } as any);
+
+    notification.onclick = () => {
+      window.focus();
+      notification.close();
+    };
+  } catch (e) {
+    console.error("Notification error:", e);
+  }
+}

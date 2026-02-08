@@ -58,6 +58,27 @@ export const App: React.FC = () => {
     };
 
     initApp();
+
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').then(registration => {
+        console.log('SW registered: ', registration);
+      }).catch(registrationError => {
+        console.log('SW registration failed: ', registrationError);
+      });
+
+      // Listen for messages from SW (Action Buttons)
+      navigator.serviceWorker.addEventListener('message', event => {
+        if (event.data && event.data.type === 'MARK_TAKEN') {
+          const doseId = event.data.payload?.doseId;
+          if (doseId) {
+            handleTakeDose(doseId);
+            // Optional: Show toast
+            alert("Dose marked as taken from notification!");
+          }
+        }
+      });
+    }
   }, []);
 
   // Persistence (Saving Data)
@@ -97,7 +118,8 @@ export const App: React.FC = () => {
           if (diffMins >= 0 && diffMins < 60 && !dose.notificationSent) {
             sendLocalNotification(
               `Time to take ${dose.drugName}`,
-              `Dose ${dose.pillNumber} is due now. Keep your streak!`
+              `Dose ${dose.pillNumber} is due now. Keep your streak!`,
+              { doseId: dose.id }
             );
             changed = true;
             return { ...dose, notificationSent: true };
