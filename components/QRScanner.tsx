@@ -122,28 +122,7 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScan, onCancel }) => {
         </button>
       </div>
 
-      <div className="bg-slate-900 p-6 pb-12 rounded-t-3xl -mt-6 relative z-10 max-h-[40vh] overflow-y-auto no-scrollbar border-t border-slate-800">
-        <h3 className="text-white font-bold text-lg mb-2">Scan Medication</h3>
-        <p className="text-slate-400 text-sm mb-6">
-          Align the QR code within the frame to scan.
-        </p>
 
-        <div className="space-y-3">
-          <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Debug: Try Dummy QR</p>
-          {MOCK_QR_OPTIONS.map((option, idx) => (
-            <AppButton
-              key={idx}
-              onClick={() => handleSimulateScan(option.data)}
-              variant="secondary"
-              fullWidth
-              className="text-xs justify-start py-4 bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700 hover:text-white"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 text-sky-500"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-              {option.label}
-            </AppButton>
-          ))}
-        </div>
-      </div>
 
       <style>{`
         @keyframes scan {
