@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
-import { AppButton } from './AppButton';
-import { MOCK_QR_OPTIONS } from '../constants';
+
 import { DrugQRCodeData } from '../types';
 
 interface QRScannerProps {
@@ -77,9 +76,7 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onScan, onCancel }) => {
     };
   }, []);
 
-  const handleSimulateScan = (data: DrugQRCodeData) => {
-    onScan(data);
-  };
+
 
   return (
     <div className="fixed inset-0 bg-black z-50 flex flex-col">
