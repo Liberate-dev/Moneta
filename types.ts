@@ -9,6 +9,9 @@ export interface DrugQRCodeData {
   instruction: string;
   total_pills: number;
   exp_date?: string; // ISO Date String
+  how_to_take?: string; // Cara Minum (e.g., "Swallow whole with water")
+  how_to_dispose?: string; // Cara Buang (e.g., "Return to pharmacy")
+  side_effects?: string; // Aturan/Efek Samping (e.g., "May cause drowsiness")
 }
 
 export interface Drug extends DrugQRCodeData {

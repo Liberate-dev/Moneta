@@ -7,14 +7,17 @@ export const MOCK_QR_OPTIONS = [
     label: "Amoxicillin (Box #101)",
     data: {
       "drug_id": "ABX-GEN-001",
-      "serial_number": "SN-AMX-2024-001", 
+      "serial_number": "SN-AMX-2024-001",
       "name": "Amoxicillin",
       "dosage": "500mg",
       "frequency_per_day": 3,
       "duration_days": 5,
       "instruction": "After food",
       "total_pills": 15,
-      "exp_date": "2025-12-31"
+      "exp_date": "2025-12-31",
+      "how_to_take": "Swallow whole with water",
+      "how_to_dispose": "Return to pharmacy",
+      "side_effects": "May cause drowsiness"
     }
   },
   {

@@ -15,12 +15,17 @@ export const AdminApp: React.FC = () => {
     duration_days: 5,
     instruction: 'Sesudah makan',
     total_pills: 15,
-    drug_id: 'GENERIC-001'
+    drug_id: 'GENERIC-001',
+    how_to_take: '',
+    how_to_dispose: '',
+    side_effects: ''
   });
+
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const [generatedQR, setGeneratedQR] = useState<{ json: string, url: string } | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const val = e.target.type === 'number' ? Number(e.target.value) : e.target.value;
     setFormData({ ...formData, [e.target.name]: val });
   };
@@ -43,7 +48,10 @@ export const AdminApp: React.FC = () => {
       duration_days: Number(formData.duration_days),
       instruction: formData.instruction || '',
       total_pills: Number(formData.total_pills),
-      exp_date: expDate.toISOString().split('T')[0]
+      exp_date: expDate.toISOString().split('T')[0],
+      how_to_take: formData.how_to_take,
+      how_to_dispose: formData.how_to_dispose,
+      side_effects: formData.side_effects
     };
 
     // 4. Convert to JSON String
@@ -57,6 +65,9 @@ export const AdminApp: React.FC = () => {
       json: jsonString,
       url: qrUrl
     });
+
+    setShowSuccess(true);
+    setTimeout(() => setShowSuccess(false), 3000);
   };
 
   const handlePrint = () => {
@@ -77,6 +88,13 @@ export const AdminApp: React.FC = () => {
             <h1 className="text-3xl font-black text-slate-800 tracking-tight">MONETA <span className="text-sky-500">Admin</span></h1>
             <p className="text-slate-500 text-sm mt-1">QR Code Generator for Antibiotics</p>
           </div>
+
+          {showSuccess && (
+            <div className="mb-6 bg-emerald-100 text-emerald-700 p-4 rounded-xl flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              <span className="font-bold">QR Code Generated Successfully!</span>
+            </div>
+          )}
 
           <div className="space-y-5">
             <div>
@@ -150,6 +168,42 @@ export const AdminApp: React.FC = () => {
                 <option value="Sebelum makan">Sebelum makan (Before food)</option>
                 <option value="Saat makan">Saat makan (With food)</option>
               </select>
+            </div>
+
+            <div>
+              <label className={labelClass}>Cara Minum (How to Take)</label>
+              <input
+                name="how_to_take"
+                type="text"
+                placeholder="e.g. Swallow whole with water"
+                className={inputClass}
+                value={formData.how_to_take}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div>
+              <label className={labelClass}>Cara Buang (How to Dispose)</label>
+              <input
+                name="how_to_dispose"
+                type="text"
+                placeholder="e.g. Return unused pills to pharmacy"
+                className={inputClass}
+                value={formData.how_to_dispose}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div>
+              <label className={labelClass}>Aturan / Efek Samping (Side Effects/Rules)</label>
+              <textarea
+                name="side_effects"
+                rows={2}
+                placeholder="e.g. May cause drowsiness. Do not drive."
+                className={inputClass}
+                value={formData.side_effects}
+                onChange={handleChange}
+              />
             </div>
 
             <div className="pt-6">

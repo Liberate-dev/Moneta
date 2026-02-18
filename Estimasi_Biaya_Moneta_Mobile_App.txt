@@ -1,0 +1,182 @@
+================================================================================
+          ESTIMASI BIAYA INFRASTRUKTUR & OPERASIONAL
+              MONETA — Flutter Mobile App
+================================================================================
+          Antibiotic Adherence Tracker
+          Tanggal: 15 Februari 2026
+================================================================================
+
+
+Dokumen ini berisi daftar biaya yang perlu dikeluarkan untuk meluncurkan
+dan menjalankan aplikasi Moneta sebagai native mobile app (Android & iOS).
+Biaya di bawah ini BUKAN biaya development/jasa developer, melainkan biaya
+layanan, akun, dan infrastruktur yang dibutuhkan.
+
+
+------------------------------------------------------------------------
+1. BIAYA AWAL (BAYAR SEKALI)
+------------------------------------------------------------------------
+
+  No.  Item                                 Biaya (IDR)     Keterangan
+  ---  ------------------------------------  --------------  -------------------
+  1.   Google Play Console (Android)         Rp    400.000   Sekali bayar seumur
+                                                             hidup ($25 USD)
+
+  2.   Apple Developer Program (iOS)         Rp  1.600.000   Langganan tahunan
+                                                             ($99 USD/tahun)
+       ---------------------------------------------------------------
+       SUBTOTAL BIAYA AWAL                   Rp  2.000.000
+       ---------------------------------------------------------------
+
+  * Jika hanya target Android, cukup Rp 400.000 saja (sekali).
+  * Apple Developer wajib diperpanjang setiap tahun.
+
+
+------------------------------------------------------------------------
+2. BACKEND & DATABASE — FIREBASE (Rekomendasi)
+------------------------------------------------------------------------
+
+Firebase dipilih karena integrasi dengan Flutter sangat baik,
+dan memiliki Free Tier yang cukup untuk tahap awal.
+
+  No.  Service                     Free Tier            Biaya Jika Melebihi
+  ---  --------------------------  -------------------  --------------------
+  1.   Firebase Authentication     50.000 user/bulan    Rp 0 (cukup)
+  2.   Cloud Firestore (Database)  1 GB + 50K read/day  Mulai Rp 10.000/bln
+  3.   Cloud Messaging (Notif)     GRATIS UNLIMITED     Rp 0
+  4.   Firebase Hosting (Admin)    10 GB/bulan          Mulai Rp 5.000/bln
+  5.   Firebase Storage (File)     5 GB gratis          Mulai Rp 4.000/bln
+  6.   Firebase Analytics          GRATIS UNLIMITED     Rp 0
+  7.   Firebase Crashlytics        GRATIS UNLIMITED     Rp 0
+
+  Estimasi bulanan:
+  - Skala kecil  (<1.000 user)   : Rp 0 (GRATIS)
+  - Skala menengah (1.000-10.000): Rp 50.000 - 300.000/bulan
+
+
+------------------------------------------------------------------------
+3. ALTERNATIF: CUSTOM BACKEND (Self-Hosted)
+------------------------------------------------------------------------
+
+Jika tidak ingin menggunakan Firebase:
+
+  No.  Item                                 Biaya/Bulan     Keterangan
+  ---  ------------------------------------  --------------  -------------------
+  1.   VPS (DigitalOcean/Contabo/dll)       Rp   70.000 -   Minimal 1 GB RAM
+                                             Rp  300.000
+  2.   Database (di VPS)                     Rp         0    Termasuk di VPS
+  3.   Domain (untuk API)                    Rp  150.000     Per tahun
+  4.   SSL Certificate                       Rp         0    Let's Encrypt
+  5.   Push Notif (OneSignal)                Rp         0    Free tier cukup
+       ---------------------------------------------------------------
+       SUBTOTAL /BULAN                      Rp 70.000 - 300.000
+       ---------------------------------------------------------------
+
+
+------------------------------------------------------------------------
+4. PUSH NOTIFICATION
+------------------------------------------------------------------------
+
+  Service                          Biaya       Keterangan
+  -------------------------------  ----------  -------------------------
+  Firebase Cloud Messaging (FCM)   GRATIS      Unlimited, wajib Android
+  Apple Push Notification (APNs)   GRATIS      Termasuk di Apple Dev
+
+  * Push notification mobile 100% gratis via FCM + APNs.
+
+
+------------------------------------------------------------------------
+5. ANALYTICS & MONITORING (Opsional, Sangat Disarankan)
+------------------------------------------------------------------------
+
+  Service                       Biaya       Keterangan
+  ----------------------------  ----------  ----------------------------
+  Firebase Analytics             GRATIS      Tracking perilaku pengguna
+  Firebase Crashlytics           GRATIS      Laporan crash & error
+  Firebase Performance           GRATIS      Monitoring performa app
+
+  * Semua gratis unlimited, sangat disarankan dipasang sejak awal.
+
+
+========================================================================
+          RINGKASAN TOTAL BIAYA
+========================================================================
+
+
+SKENARIO 1: MINIMUM (Android Only + Firebase Gratis)
+------------------------------------------------------------------------
+  Google Play Console              Rp   400.000   (sekali)
+  Firebase Spark Plan              Rp         0   /bulan
+  Push Notification + Analytics    Rp         0   /bulan
+  ---------------------------------------------------------------
+  TOTAL TAHUN PERTAMA              Rp   400.000
+  TOTAL PER TAHUN SETELAHNYA       Rp         0
+  ---------------------------------------------------------------
+
+
+SKENARIO 2: STANDARD (Android + iOS + Firebase Gratis)
+------------------------------------------------------------------------
+  Google Play Console              Rp   400.000   (sekali)
+  Apple Developer Program          Rp 1.600.000   /tahun
+  Firebase Spark Plan              Rp         0   /bulan
+  ---------------------------------------------------------------
+  TOTAL TAHUN PERTAMA              Rp 2.000.000
+  TOTAL PER TAHUN SETELAHNYA       Rp 1.600.000   /tahun
+  ---------------------------------------------------------------
+
+
+SKENARIO 3: GROWTH (Android + iOS + Firebase Berbayar)
+------------------------------------------------------------------------
+  Google Play Console              Rp   400.000   (sekali)
+  Apple Developer Program          Rp 1.600.000   /tahun
+  Firebase Blaze Plan              Rp    50.000 - 300.000 /bulan
+  Domain (API/Landing Page)        Rp   150.000   /tahun
+  ---------------------------------------------------------------
+  TOTAL TAHUN PERTAMA              Rp 2.750.000 - 5.750.000
+  TOTAL PER TAHUN SETELAHNYA       Rp 2.350.000 - 5.350.000 /tahun
+  ---------------------------------------------------------------
+
+
+========================================================================
+          PERBANDINGAN: WEB APP vs MOBILE APP
+========================================================================
+
+  Aspek              Web App               Mobile App (Flutter)
+  -----------------  --------------------  -------------------------
+  Hosting app        VPS/Vercel            Tidak perlu (dari store)
+                     (Rp 0-300K/bln)
+  Domain             Rp 100-200K/tahun     Tidak wajib
+  SSL                Gratis                Tidak perlu (store)
+  Store fee          Tidak ada             Play: Rp 400K (sekali)
+                                           Apple: Rp 1.6jt/tahun
+  Push notif         Perlu HTTPS + SW      FCM gratis unlimited
+  Backend            Perlu VPS/serverless  Sama (Firebase recommended)
+  Update             Deploy langsung       Review store 1-3 hari
+
+  Kesimpulan: Biaya operasional mobile bisa LEBIH MURAH karena
+  tidak perlu hosting/domain/VPS untuk app-nya sendiri.
+
+
+========================================================================
+          CATATAN PENTING
+========================================================================
+
+  1. Firebase memiliki Free Tier (Spark Plan) yang CUKUP untuk
+     tahap awal, bahkan untuk ratusan pengguna.
+
+  2. Baru perlu upgrade ke Blaze Plan (pay-as-you-go) jika
+     jumlah pengguna sudah mencapai ribuan.
+
+  3. Biaya di atas BELUM termasuk jasa development/developer.
+
+  4. Maintenance bulanan (bug fix, update OS compatibility)
+     biasanya berkisar 10-15% dari total biaya development
+     per tahun.
+
+  5. Kurs USD yang digunakan: 1 USD = Rp 16.000 (estimasi).
+
+
+================================================================================
+  Dokumen ini disiapkan untuk kebutuhan estimasi biaya proyek Moneta.
+  Untuk pertanyaan lebih lanjut, silakan hubungi tim developer.
+================================================================================

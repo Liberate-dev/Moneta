@@ -116,9 +116,12 @@ export const App: React.FC = () => {
           const diffMins = (now.getTime() - doseTime.getTime()) / (1000 * 60);
 
           if (diffMins >= 0 && diffMins < 60 && !dose.notificationSent) {
+            const drug = medications.find(m => m.id === dose.drugId);
+            const instruction = drug?.how_to_take ? `\nCara: ${drug.how_to_take}` : '';
+
             sendLocalNotification(
               `Time to take ${dose.drugName}`,
-              `Dose ${dose.pillNumber} is due now. Keep your streak!`,
+              `Dose ${dose.pillNumber} is due.${instruction}`,
               { doseId: dose.id }
             );
             changed = true;
@@ -141,7 +144,7 @@ export const App: React.FC = () => {
 
     const interval = setInterval(monitorSchedule, 30000);
     return () => clearInterval(interval);
-  }, [user]);
+  }, [user, medications]);
 
   // Handlers
   const handleLogin = (userData: User) => {
@@ -304,6 +307,29 @@ export const App: React.FC = () => {
               <span className="text-slate-500">Batch ID</span>
               <span className="font-mono text-xs font-bold text-slate-500 py-1 bg-slate-100 px-2 rounded">{scannedData.serial_number}</span>
             </div>
+
+            {(scannedData.how_to_take || scannedData.how_to_dispose || scannedData.side_effects) && (
+              <div className="mt-4 pt-2 border-t border-slate-100 space-y-3">
+                {scannedData.how_to_take && (
+                  <div>
+                    <p className="text-xs font-bold text-slate-400 uppercase">Cara Minum</p>
+                    <p className="text-sm text-slate-700">{scannedData.how_to_take}</p>
+                  </div>
+                )}
+                {scannedData.how_to_dispose && (
+                  <div>
+                    <p className="text-xs font-bold text-slate-400 uppercase">Cara Buang</p>
+                    <p className="text-sm text-slate-700">{scannedData.how_to_dispose}</p>
+                  </div>
+                )}
+                {scannedData.side_effects && (
+                  <div>
+                    <p className="text-xs font-bold text-slate-400 uppercase">Aturan / Efek Samping</p>
+                    <p className="text-sm text-slate-700">{scannedData.side_effects}</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="space-y-3">
